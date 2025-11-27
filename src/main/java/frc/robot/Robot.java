@@ -13,12 +13,19 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIOComp;
+import frc.robot.subsystems.intake.IntakeIOSim;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+import org.littletonrobotics.urcl.URCL;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -27,7 +34,15 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
  * project.
  */
 public class Robot extends LoggedRobot {
+
+  private Intake intake;
+  private final CommandXboxController controller = new CommandXboxController(0);
+
   public Robot() {
+    System.out.println("=== Robot Constructor Start ===");
+    System.out.println("RobotBase.isSimulation(): " + RobotBase.isSimulation());
+    System.out.println("Current mode: " + Constants.currentMode);
+
     // Record metadata
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
@@ -47,16 +62,21 @@ public class Robot extends LoggedRobot {
     }
 
     // Set up data receivers & replay source
+
+    // Constants.getMode();
+
     switch (Constants.currentMode) {
       case REAL:
         // Running on a real robot, log to a USB stick ("/U/logs")
         Logger.addDataReceiver(new WPILOGWriter());
         Logger.addDataReceiver(new NT4Publisher());
+        intake = new Intake(new IntakeIOComp());
         break;
 
       case SIM:
         // Running a physics simulator, log to NT
         Logger.addDataReceiver(new NT4Publisher());
+        intake = new Intake(new IntakeIOSim());
         break;
 
       case REPLAY:
@@ -68,13 +88,38 @@ public class Robot extends LoggedRobot {
         break;
     }
 
+    // if (Constants.getMode() != Mode.REPLAY) {
+    //   switch (Constants.robotType) {
+    //     case COMPBOT -> {
+    //       intake = new Intake(new IntakeIOComp());
+    //     }
+
+    //     case DEVBOT -> {
+    //       intake = new Intake(new IntakeIO() {});
+    //     }
+
+    //     case SIMBOT -> {
+    //       intake = new Intake(new IntakeIOSim());
+    //     }
+    //   }
+    // } else {
+    //   intake = new Intake(new IntakeIO() {});
+    // }
+
+    controller.a().whileTrue(intake.runIntake(6));
+    intake.setDefaultCommand(intake.intake());
+    Logger.registerURCL(URCL.startExternal());
+
     // Start AdvantageKit logger
     Logger.start();
   }
 
   /** This function is called periodically during all modes. */
   @Override
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    super.robotPeriodic();
+    CommandScheduler.getInstance().run();
+  }
 
   /** This function is called once when the robot is disabled. */
   @Override
