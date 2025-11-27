@@ -15,7 +15,9 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.Mode;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
@@ -39,6 +41,11 @@ public class Robot extends LoggedRobot {
 
   private Intake intake;
   private final CommandXboxController controller = new CommandXboxController(0);
+
+  private final Joystick keyboard = new Joystick(0);
+
+  private final JoystickButton buttonOne = new JoystickButton(keyboard, 1);
+  private final JoystickButton buttonTwo = new JoystickButton(keyboard, 2);
 
   public Robot() {
 
@@ -116,9 +123,8 @@ public class Robot extends LoggedRobot {
     }
 
     // Bind commands / Triggers
-
-    controller.a().whileTrue(intake.runIntake(6));
-    intake.setDefaultCommand(intake.intake());
+    buttonOne.whileTrue(intake.runIntake(6));
+    buttonTwo.whileTrue(intake.stop());
   }
 
   /** This function is called periodically during all modes. */
