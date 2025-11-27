@@ -6,10 +6,8 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 public class IntakeIOSim implements IntakeIO {
-  private final DCMotor intakeMotor = DCMotor.getNEO(2);
+  private final DCMotor intakeMotor = DCMotor.getKrakenX60(1);
   private final DCMotorSim intakeMotorSim;
-  // private final SimDevice sensorImpl;
-  // private final SimBoolean sensor;
 
   private double volts = 0;
   private double appliedVolts = 0.0;
@@ -17,9 +15,6 @@ public class IntakeIOSim implements IntakeIO {
   public IntakeIOSim() {
     intakeMotorSim =
         new DCMotorSim(LinearSystemId.createDCMotorSystem(intakeMotor, 3, 1), intakeMotor);
-
-    // sensorImpl = SimDevice.create("IntakeSensorFront", 3);
-    // sensor = sensorImpl.createBoolean("IsTriggered", Direction.kInput, false);
   }
 
   @Override
@@ -28,9 +23,6 @@ public class IntakeIOSim implements IntakeIO {
     inputs.currentAmps = intakeMotorSim.getCurrentDrawAmps();
     inputs.appliedVolts = intakeMotorSim.getInputVoltage();
     inputs.angularVelocity = intakeMotorSim.getAngularVelocityRPM();
-
-    System.out.println(
-        "IntakeIOSim.updateInputs running, RPM = " + intakeMotorSim.getAngularVelocityRPM());
   }
 
   @Override

@@ -16,7 +16,9 @@ package frc.robot;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.Mode;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOComp;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -39,6 +41,8 @@ public class Robot extends LoggedRobot {
   private final CommandXboxController controller = new CommandXboxController(0);
 
   public Robot() {
+
+    // Optional Print-Outs
     System.out.println("=== Robot Constructor Start ===");
     System.out.println("RobotBase.isSimulation(): " + RobotBase.isSimulation());
     System.out.println("Current mode: " + Constants.currentMode);
@@ -88,30 +92,33 @@ public class Robot extends LoggedRobot {
         break;
     }
 
-    // if (Constants.getMode() != Mode.REPLAY) {
-    //   switch (Constants.robotType) {
-    //     case COMPBOT -> {
-    //       intake = new Intake(new IntakeIOComp());
-    //     }
-
-    //     case DEVBOT -> {
-    //       intake = new Intake(new IntakeIO() {});
-    //     }
-
-    //     case SIMBOT -> {
-    //       intake = new Intake(new IntakeIOSim());
-    //     }
-    //   }
-    // } else {
-    //   intake = new Intake(new IntakeIO() {});
-    // }
-
-    controller.a().whileTrue(intake.runIntake(6));
-    intake.setDefaultCommand(intake.intake());
     Logger.registerURCL(URCL.startExternal());
 
     // Start AdvantageKit logger
     Logger.start();
+
+    if (Constants.getMode() != Mode.REPLAY) {
+      switch (Constants.robotType) {
+        case COMPBOT -> {
+          intake = new Intake(new IntakeIOComp());
+        }
+
+        case DEVBOT -> {
+          intake = new Intake(new IntakeIO() {});
+        }
+
+        case SIMBOT -> {
+          intake = new Intake(new IntakeIOSim());
+        }
+      }
+    } else {
+      intake = new Intake(new IntakeIO() {});
+    }
+
+    // Bind commands / Triggers
+
+    controller.a().whileTrue(intake.runIntake(6));
+    intake.setDefaultCommand(intake.intake());
   }
 
   /** This function is called periodically during all modes. */

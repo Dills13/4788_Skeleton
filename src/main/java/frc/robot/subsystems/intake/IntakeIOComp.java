@@ -14,7 +14,6 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
 import frc.robot.util.PhoenixUtil;
-import frc.robot.util.PhoenixUtil.*;
 
 public class IntakeIOComp implements IntakeIO {
 
