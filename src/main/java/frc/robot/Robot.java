@@ -13,12 +13,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.Mode;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ArmIOSim;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOComp;
@@ -40,12 +42,15 @@ import org.littletonrobotics.urcl.URCL;
 public class Robot extends LoggedRobot {
 
   private Intake intake;
+  private Arm arm;
   private final CommandXboxController controller = new CommandXboxController(0);
 
   private final Joystick keyboard = new Joystick(0);
 
   private final JoystickButton buttonOne = new JoystickButton(keyboard, 1);
   private final JoystickButton buttonTwo = new JoystickButton(keyboard, 2);
+  private final JoystickButton buttonThree = new JoystickButton(keyboard, 3);
+  private final JoystickButton buttonFour = new JoystickButton(keyboard, 4);
 
   public Robot() {
 
@@ -82,14 +87,16 @@ public class Robot extends LoggedRobot {
         Logger.addDataReceiver(new WPILOGWriter());
         Logger.addDataReceiver(new NT4Publisher());
         intake = new Intake(new IntakeIOComp());
+
         break;
 
       case SIM:
         // Running a physics simulator, log to NT
         Logger.addDataReceiver(new NT4Publisher());
         intake = new Intake(new IntakeIOSim());
-        break;
+        arm = new Arm(new ArmIOSim());
 
+        break;
       case REPLAY:
         // Replaying a log, set up replay source
         setUseTiming(false); // Run as fast as possible
@@ -116,6 +123,7 @@ public class Robot extends LoggedRobot {
 
         case SIMBOT -> {
           intake = new Intake(new IntakeIOSim());
+          arm = new Arm(new ArmIOSim());
         }
       }
     } else {
@@ -123,8 +131,21 @@ public class Robot extends LoggedRobot {
     }
 
     // Bind commands / Triggers
-    buttonOne.whileTrue(intake.runIntake(6));
-    buttonTwo.whileTrue(intake.stop());
+    // buttonOne.onTrue(intake.runIntake(6));
+    // buttonTwo.onTrue(intake.stop());
+    // buttonThree.onTrue(arm.goToSetpoint(Math.toRadians(500)));
+    // buttonFour.onTrue(arm.stop());
+
+    // controls to see arm jumping
+    // If graphing rotational velocity, the scale of the graph with be very zoomed out as the
+    // simulated motors produce large results
+    buttonOne.onTrue(arm.goToSetpoint(Math.toRadians(50)));
+    buttonTwo.onTrue(arm.goToSetpoint(Math.toRadians(200)));
+    buttonThree.onTrue(arm.goToSetpoint(Math.toRadians(600)));
+    buttonFour.onTrue(arm.stop());
+
+    // arm.goToSetpoint(Math.toRadians(45)).schedule();
+    // buttonFour.whileTrue(arm.RawControl(8));
   }
 
   /** This function is called periodically during all modes. */
