@@ -9,7 +9,9 @@ public interface ArmIO {
     public double arm_appliedVolts;
     public double arm_currentAmp;
     public double arm_position;
-    public double arm_goal;
+    public double arm_goalOne;
+    public double arm_goalTwo;
+    public double arm_goalThree;
     public double arm_angularVelocity;
     public boolean arm_atSetpoint;
   }

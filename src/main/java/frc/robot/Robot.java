@@ -139,9 +139,11 @@ public class Robot extends LoggedRobot {
     // controls to see arm jumping
     // If graphing rotational velocity, the scale of the graph with be very zoomed out as the
     // simulated motors produce large results
-    buttonOne.onTrue(arm.goToSetpoint(Math.toRadians(50)));
-    buttonTwo.onTrue(arm.goToSetpoint(Math.toRadians(200)));
-    buttonThree.onTrue(arm.goToSetpoint(Math.toRadians(600)));
+
+    // 45
+    buttonOne.onTrue(arm.goToSetpoint(Math.toRadians(45)));
+    buttonTwo.onTrue(arm.goToSetpoint(Math.toRadians(90)));
+    buttonThree.onTrue(arm.goToSetpoint(Math.toRadians(360)));
     buttonFour.onTrue(arm.stop());
 
     // arm.goToSetpoint(Math.toRadians(45)).schedule();
