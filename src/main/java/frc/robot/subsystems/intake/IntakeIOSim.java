@@ -4,10 +4,12 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 
 public class IntakeIOSim implements IntakeIO {
   private final DCMotor intakeMotor = DCMotor.getKrakenX60(1);
   private final DCMotorSim intakeMotorSim;
+  private final FlywheelSim intakFlywheelSim;
 
   private double volts = 0;
   private double appliedVolts = 0.0;
@@ -15,6 +17,8 @@ public class IntakeIOSim implements IntakeIO {
   public IntakeIOSim() {
     intakeMotorSim =
         new DCMotorSim(LinearSystemId.createDCMotorSystem(intakeMotor, 3, 1), intakeMotor);
+    intakFlywheelSim =
+        new FlywheelSim(LinearSystemId.createFlywheelSystem(intakeMotor, 0.02, 1), intakeMotor);
   }
 
   @Override

@@ -16,17 +16,22 @@ public class Arm extends SubsystemBase {
   private final ArmIOInputsAutoLogged inputs = new ArmIOInputsAutoLogged();
   private final PIDController pid = new PIDController(3, 0, 0.2);
   Mechanism2d mechanism = new Mechanism2d(3, 3);
+  Mechanism2d mechanism2 = new Mechanism2d(3, 3);
 
   private final Mechanism2d mech = new Mechanism2d(2, 2);
+  private final Mechanism2d mech2 = new Mechanism2d(2, 2);
   private final MechanismRoot2d root = mech.getRoot("ArmRoot", 1, 0);
   private final MechanismLigament2d armLigament =
       new MechanismLigament2d(
           "Arm", 1.0, 0, 6, new Color8Bit(Color.kMagenta)); // length 1m, angle 0°
+  private final MechanismLigament2d armLigament2 =
+      new MechanismLigament2d("Arm2", 1.0, 0, 3, new Color8Bit(Color.kGold));
 
   public Arm(ArmIO parameter_io) {
     this.io = parameter_io;
     pid.setTolerance(0.2);
     root.append(armLigament);
+    armLigament.append(armLigament2);
     SmartDashboard.putData("Arm", mech);
   }
 
@@ -39,6 +44,8 @@ public class Arm extends SubsystemBase {
 
     // Update visualization
 
+    armLigament2.setAngle(Math.toDegrees(inputs.arm_position * 2));
+    Logger.recordOutput("Arm/Mechanism", inputs.arm_position);
     armLigament.setAngle(Math.toDegrees(inputs.arm_position));
     Logger.recordOutput("Arm/Mechanism", inputs.arm_position);
 

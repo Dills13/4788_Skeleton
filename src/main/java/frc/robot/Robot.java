@@ -131,8 +131,8 @@ public class Robot extends LoggedRobot {
     }
 
     // Bind commands / Triggers
-    // buttonOne.onTrue(intake.runIntake(6));
-    // buttonTwo.onTrue(intake.stop());
+    buttonThree.onTrue(intake.runIntake(6));
+    buttonFour.onTrue(intake.stop());
     // buttonThree.onTrue(arm.goToSetpoint(Math.toRadians(500)));
     // buttonFour.onTrue(arm.stop());
 
@@ -143,8 +143,8 @@ public class Robot extends LoggedRobot {
     // 45
     buttonOne.onTrue(arm.goToSetpoint(Math.toRadians(45)));
     buttonTwo.onTrue(arm.goToSetpoint(Math.toRadians(90)));
-    buttonThree.onTrue(arm.goToSetpoint(Math.toRadians(360)));
-    buttonFour.onTrue(arm.stop());
+    // buttonThree.onTrue(arm.goToSetpoint(Math.toRadians(0)));
+    // buttonFour.onTrue(arm.stop());
 
     // arm.goToSetpoint(Math.toRadians(45)).schedule();
     // buttonFour.whileTrue(arm.RawControl(8));
